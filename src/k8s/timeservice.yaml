@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -9,6 +9,10 @@ metadata:
   namespace: pitstop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      system: pitstop
+      app: timeservice
   template:
     metadata:
       labels:
@@ -20,7 +24,9 @@ spec:
       - env:
         - name: PITSTOP_ENVIRONMENT
           value: Production
-        image: pitstop/timeservice:1.0
+        image: docker.pkg.github.com/bravecobra/pitstop/timeservice:1.0
         imagePullPolicy: IfNotPresent
         name: timeservice
+      imagePullSecrets:
+      - name: regcred
       restartPolicy: Always

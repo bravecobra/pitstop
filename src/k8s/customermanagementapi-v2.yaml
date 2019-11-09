@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -9,6 +9,11 @@ metadata:
   namespace: pitstop
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      system: pitstop
+      app: customermanagementapi
+      version: "2.0"
   template:
     metadata:
       labels:
@@ -20,9 +25,11 @@ spec:
       - env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        image: pitstop/customermanagementapi:2.0
+        image: docker.pkg.github.com/bravecobra/pitstop/customermanagementapi:2.0
         imagePullPolicy: IfNotPresent
         name: customermanagementapi
         ports:
         - containerPort: 5100
+      imagePullSecrets:
+      - name: regcred
       restartPolicy: Always
